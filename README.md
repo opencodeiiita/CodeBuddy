@@ -23,7 +23,7 @@ Welcome to **CodeBuddy**, a Flutter-powered app designed to make competitive pro
 ---
 
 ## 🧑‍🏫 **Mentors**  
-This project is proudly mentored and guided by:  
+This project is mentored and guided by:  
 - **Aarav**  
 - **Grish**
 
@@ -36,8 +36,8 @@ This project is proudly mentored and guided by:
   - GoRouter for navigation.  
 
 ### **Backend**  
-- **Spring Boot**  
-  - Backend services designed for scalability and performance.
+- **Firebase**  
+  - Firebase services used for easy integration.
 
 ---
 
