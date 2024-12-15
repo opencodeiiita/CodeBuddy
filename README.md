@@ -42,7 +42,7 @@ This project is mentored and guided by:
 ---
 
 ## 🔧 **Code Style**
-- **Language:** Dart (frontend) and Java (backend).  
+- **Language:** Dart (frontend) and Firebase (database).  
 - **Best Practices:**  
   - Follow Dart's official [Effective Dart](https://dart.dev/guides/language/effective-dart) guidelines for clean, maintainable code.  
   - Use `flutter_lints` for static code analysis in Flutter projects.  
