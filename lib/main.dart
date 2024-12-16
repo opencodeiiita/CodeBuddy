@@ -1,7 +1,16 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'firebase_options.dart';
 
 void main() {
-  runApp(const MyApp());
+  //For setting orientation to portrait mode only
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitDown,DeviceOrientation.portraitUp]).then((value){
+    _initializeFirebase();
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -122,4 +131,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+_initializeFirebase() async{
+  return await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
