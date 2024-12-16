@@ -25,3 +25,4 @@ Name: Sarvesh Kumar
 Name: Sai Chithra
 Name: Shwet Kumar
 Name: Samandeep Singh Sidhu
+Name: Deepanshu Soni
