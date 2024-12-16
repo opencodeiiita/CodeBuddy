@@ -6,4 +6,5 @@ Name: Kartik Sharma
 Name:Ishita Agrawal
 Name: Snehal Gupta
 Name: Priyam J Chakrabarty
+Name:Nitya Bhavsar
 Name: Rachit Kansal
