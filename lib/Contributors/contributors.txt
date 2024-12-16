@@ -10,7 +10,6 @@ Name: Nitya Bhavsar
 Name: Rachit Kansal
 Name: Saurabh Dubey
 Name: Ritesh Narayan Das
-Name: Debmallya Bhandari
 Name: Dhruv Goyal
 Name: Aditya Aggarwal
 Name: Anusa Saha
@@ -19,3 +18,4 @@ Name: Rajdeep Paul
 Name: Puravi Mohta
 Name: Ayushi Songara
 Name: Hemant
+Name: Debmallya Bhandari
