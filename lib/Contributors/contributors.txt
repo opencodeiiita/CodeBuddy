@@ -1,6 +1,6 @@
 Name: Swarup Narkhede
 Name: Kanav Agrawal
-Name : Ashutosh Kumar
+Name: Ashutosh Kumar
 Name: Ashish Saraswat
 Name: Kartik Sharma
 Name:Ishita Agrawal
