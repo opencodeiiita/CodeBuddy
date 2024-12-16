@@ -24,3 +24,4 @@ Name: Krishna Mohan
 Name: Sarvesh Kumar
 Name: Shwet Kumar
 Name: Samandeep Singh Sidhu
+Name: Deepanshu Soni
