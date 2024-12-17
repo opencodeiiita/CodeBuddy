@@ -30,3 +30,4 @@ Name: Deepanshu Soni
 Name: Arjun Deshwal
 Name: Sanjitha S
 Name: Debankur Dutta
+Name: Atharwa Zawar
