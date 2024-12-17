@@ -32,3 +32,4 @@ Name: Sanjitha S
 Name: Debankur Dutta
 Name: Atharwa Zawar
 Name: Suyash Kumar
+Name: Harshit
