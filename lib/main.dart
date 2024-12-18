@@ -6,6 +6,7 @@ import 'firebase_options.dart';
 
 void main() {
   //For setting orientation to portrait mode only
+  WidgetsFlutterBinding.ensureInitialized();  
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitDown,DeviceOrientation.portraitUp]).then((value){
     _initializeFirebase();
