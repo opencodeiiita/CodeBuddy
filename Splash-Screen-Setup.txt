@@ -1,3 +1,5 @@
+By Navigam1108
+
 Ensure that assets are there!!
 
 command to create the splash file
@@ -8,3 +10,11 @@ run it everytime u change the flutter_splash_native parameters such as logo, bac
 To remove splash screen and go to default flutter_screen 
 
 > dart run flutter_native_splash:remove
+
+if u wish to have a plain color in the background of splash.
+
+comment the background_image: parameter and uncomment the color parameter above it with the desired color
+Same should be copied to android 12 parameters
+Different assets can be used for dark-mode too, if not defined then it will be same as above parameter
+
+for ios Different assets could be used too
