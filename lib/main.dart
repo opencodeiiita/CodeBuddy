@@ -1,14 +1,19 @@
+import 'package:codebuddy/login_screen.dart';
+import 'package:codebuddy/signup_screen.dart';
+import 'package:codebuddy/start_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'firebase_options.dart';
+// import 'firebase_options.dart';
 
 void main() {
   //For setting orientation to portrait mode only
-  WidgetsFlutterBinding.ensureInitialized();  
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitDown,DeviceOrientation.portraitUp]).then((value){
+          [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp])
+      .then((value) {
     _initializeFirebase();
     runApp(const MyApp());
   });
@@ -16,7 +21,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -40,8 +44,30 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+
+        appBarTheme: const AppBarTheme(
+            backgroundColor:
+                Color.fromRGBO(57, 36, 72, 1), // Set your desired AppBar background color
+            // elevation: 4, // Customize elevation
+            iconTheme:
+                IconThemeData(color: Colors.white), // Set default icon color
+            titleTextStyle: TextStyle(
+              color: Colors.white, // Title text color
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            )),
+
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(200, 60), // Button width and height
+            elevation: 2, // Shadow depth
+
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const StartScreen(),
     );
   }
 }
@@ -134,8 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-_initializeFirebase() async{
-  return await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+_initializeFirebase() async {
+  return await Firebase.initializeApp();
+  // options: DefaultFirebaseOptions.currentPlatform,
 }
