@@ -33,7 +33,7 @@ class StartScreen extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  spacing: 20,
+                  //spacing: 20,
                   children: [
                     ElevatedButton(
                         onPressed: () {

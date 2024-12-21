@@ -64,7 +64,7 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
       body: GradientBackground(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 5,
+        //spacing: 5,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
