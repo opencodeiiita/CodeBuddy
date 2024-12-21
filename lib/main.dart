@@ -1,6 +1,10 @@
 import 'package:codebuddy/login_screen.dart';
 import 'package:codebuddy/signup_screen.dart';
 import 'package:codebuddy/start_screen.dart';
+import 'package:codebuddy/provider.dart';
+import 'package:provider/provider.dart';
+import 'package:codebuddy/search_provider.dart';
+import 'package:codebuddy/search_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +19,14 @@ void main() {
           [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp])
       .then((value) {
     _initializeFirebase();
-    runApp(const MyApp());
+    runApp(
+      MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SearchProvider()),
+      ],
+      child: MyApp(),
+    ),
+    );
   });
 }
 
@@ -67,7 +78,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const StartScreen(),
+      home: SearchScreen(),
     );
   }
 }
