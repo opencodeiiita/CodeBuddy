@@ -9,8 +9,8 @@ import 'package:flutter/services.dart';
 
 class OtpScreen extends StatefulWidget {
   String verificationId;
-  String name = "";
-  OtpScreen({super.key, required this.verificationId, name});
+  String name;
+  OtpScreen({super.key, required this.verificationId, this.name = ""});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -117,11 +117,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   UserCredential userCredential = await FirebaseAuth.instance
                       .signInWithCredential(authCredential);
                   if (userCredential.additionalUserInfo?.isNewUser ?? false) {
-                    await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                        .set({
+                    await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid).set({
                       'name': widget.name,
+                      'phoneNumber': FirebaseAuth.instance.currentUser?.phoneNumber,
                     });
                   }
                   Navigator.pushReplacement(
