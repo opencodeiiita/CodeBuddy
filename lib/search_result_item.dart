@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:codebuddy/problem.dart';
 
 class SearchResultItem extends StatelessWidget {
-  final dynamic result;
+  final Problem result;
 
   const SearchResultItem({required this.result});
 
@@ -9,8 +10,11 @@ class SearchResultItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Icon(Icons.question_answer, color: Colors.blue),
-      title: Text(result['title']),
-      subtitle: Text(result['description'] ?? 'No description available'),
+      title: Text(result.title), // Display title of the problem
+      subtitle: Text(
+        'Difficulty: ${result.difficulty}\nAcceptance Rate: ${result.acRate.toStringAsFixed(2)}%',
+        style: TextStyle(fontSize: 14),
+      ),
     );
   }
 }

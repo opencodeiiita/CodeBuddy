@@ -1,34 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:codebuddy/problem.dart';
 import 'dart:convert';
-
-class Problem {
-  final String title;
-  final double acRate;
-  final String difficulty;
-  final List<String> topicTags;
-  final String questionFrontendId;
-
-  Problem({
-    required this.title,
-    required this.acRate,
-    required this.difficulty,
-    required this.topicTags,
-    required this.questionFrontendId,
-  });
-
-  factory Problem.fromJson(Map<String, dynamic> json) {
-    return Problem(
-      title: json['title'],
-      acRate: json['acRate'],
-      difficulty: json['difficulty'],
-      topicTags: (json['topicTags'] as List<dynamic>)
-          .map((tag) => tag['name'] as String)
-          .toList(),
-      questionFrontendId: json['questionFrontendId'],
-    );
-  }
-}
 
 class SearchProvider with ChangeNotifier {
   List<Problem> _results = [];
@@ -53,8 +26,13 @@ class SearchProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        if (data is List && data.isNotEmpty) {
-          _results = data.map((problemJson) => Problem.fromJson(problemJson)).toList();
+        // The 'problemsetQuestionList' key contains the list of problems
+        final problemList = data['problemsetQuestionList'];
+
+        if (problemList is List && problemList.isNotEmpty) {
+          _results = problemList
+              .map((problemJson) => Problem.fromJson(problemJson))
+              .toList();
         } else {
           _results = [];
           _errorMessage = 'No problems found';
