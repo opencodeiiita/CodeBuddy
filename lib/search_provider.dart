@@ -2,12 +2,40 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+class Problem {
+  final String title;
+  final double acRate;
+  final String difficulty;
+  final List<String> topicTags;
+  final String questionFrontendId;
+
+  Problem({
+    required this.title,
+    required this.acRate,
+    required this.difficulty,
+    required this.topicTags,
+    required this.questionFrontendId,
+  });
+
+  factory Problem.fromJson(Map<String, dynamic> json) {
+    return Problem(
+      title: json['title'],
+      acRate: json['acRate'],
+      difficulty: json['difficulty'],
+      topicTags: (json['topicTags'] as List<dynamic>)
+          .map((tag) => tag['name'] as String)
+          .toList(),
+      questionFrontendId: json['questionFrontendId'],
+    );
+  }
+}
+
 class SearchProvider with ChangeNotifier {
-  List<dynamic> _results = [];
+  List<Problem> _results = [];
   bool _isLoading = false;
   String _errorMessage = '';
 
-  List<dynamic> get results => _results;
+  List<Problem> get results => _results;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
@@ -18,17 +46,25 @@ class SearchProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await http.get(
-        Uri.parse('https://api.leetcode.com/problems?search=$query'),
-      );
+      // Construct the URL with the user-provided query
+      final url = 'https://alfa-leetcode-api.onrender.com/problems?tags=$query';
+
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        _results = json.decode(response.body);
+        final data = json.decode(response.body);
+        if (data is List && data.isNotEmpty) {
+          _results = data.map((problemJson) => Problem.fromJson(problemJson)).toList();
+        } else {
+          _results = [];
+          _errorMessage = 'No problems found';
+        }
       } else {
         _errorMessage = 'Oops, something went wrong!';
       }
     } catch (e) {
-      _errorMessage = 'No problems found';
+      _errorMessage = 'Error: $e';
+      print('Error occurred: $e');
     } finally {
       _isLoading = false;
       notifyListeners();

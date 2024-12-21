@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/search_provider.dart';
-import '../widgets/search_bar.dart';
-import '../widgets/search_result_item.dart';
+import 'package:codebuddy/search_bar.dart';
+import 'package:codebuddy/search_result_item.dart';
+import 'package:codebuddy/search_provider.dart';
+
 
 class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final searchProvider = Provider.of<SearchProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Search Problems'),
-        centerTitle: true,
       ),
       body: Column(
         children: [
-          SearchBar(
+          CustomSearchBar(
             onSearch: (query) => searchProvider.fetchResults(query),
           ),
           Expanded(
