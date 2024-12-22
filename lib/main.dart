@@ -1,6 +1,7 @@
 import 'package:codebuddy/login_screen.dart';
 import 'package:codebuddy/signup_screen.dart';
 import 'package:codebuddy/start_screen.dart';
+import 'package:codebuddy/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const StartScreen(),
+      home: HomeScreen(),
     );
   }
 }
