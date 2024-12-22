@@ -114,7 +114,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               MaterialPageRoute(
                                   builder: (context) => OtpScreen(
                                         verificationId: verificationId,
-                                        name: nameController.text,
+                                      name: nameController.text.isNotEmpty ? nameController.text : "Code Buddy"
                                       )));
                           setState(() {
                             isLoading = false;
