@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: SearchScreen(),
+      home: SignupScreen(),
     );
   }
 }

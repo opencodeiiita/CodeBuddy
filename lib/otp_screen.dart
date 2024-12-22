@@ -119,7 +119,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   if (userCredential.additionalUserInfo?.isNewUser ?? false) {
                     await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid).set({
                       'name': widget.name,
-                      'phoneNumber': FirebaseAuth.instance.currentUser?.phoneNumber,
+                      'phoneNumber': FirebaseAuth.instance.currentUser?.phoneNumber?.isNotEmpty == true
+                          ? FirebaseAuth.instance.currentUser?.phoneNumber
+                          : "N/A",
                     });
                   }
                   Navigator.pushReplacement(
