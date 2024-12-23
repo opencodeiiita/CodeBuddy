@@ -3,8 +3,6 @@ import 'package:codebuddy/otp_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'firebase_options.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -17,20 +15,6 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   bool isLoading = false;
-
-  Future<void> saveUserToFirestore(String name, String phoneNumber) async {
-    try {
-      await FirebaseFirestore.instance.collection('users').doc(phoneNumber).set({
-        'name': name,
-        'phone': phoneNumber,
-        'created_at': FieldValue.serverTimestamp(),
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error saving user data: $e")),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,9 +95,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       isLoading = true;
                     });
 
-                    await saveUserToFirestore(
-                        nameController.text, phoneNumberController.text);
-
                     await FirebaseAuth.instance.verifyPhoneNumber(
                         verificationCompleted:
                             (PhoneAuthCredential credential) {},
@@ -132,15 +113,9 @@ class _SignupScreenState extends State<SignupScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => OtpScreen(
-
-                                    verificationId: verificationId,
-                                    name: nameController.text,
-                                  )));
-
-                                        verificationId: verificationId,
+                                      verificationId: verificationId,
                                       name: nameController.text.isNotEmpty ? nameController.text : "Code Buddy"
-                                      )));
-
+                                  )));
                           setState(() {
                             isLoading = false;
                           });

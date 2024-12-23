@@ -42,6 +42,8 @@ dependencies:
 
   firebase_auth: ^5.2.0
 
+  http: null
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
