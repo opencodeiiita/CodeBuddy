@@ -1,13 +1,16 @@
 import 'package:codebuddy/login_screen.dart';
 import 'package:codebuddy/signup_screen.dart';
 import 'package:codebuddy/start_screen.dart';
-import 'package:codebuddy/home_screen.dart';
+import 'package:codebuddy/provider.dart';
+import 'package:provider/provider.dart';
+import 'package:codebuddy/search_provider.dart';
+import 'package:codebuddy/search_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-// import 'firebase_options.dart';
+import 'firebase_options.dart';
 
 void main() {
   //For setting orientation to portrait mode only
@@ -16,7 +19,14 @@ void main() {
           [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp])
       .then((value) {
     _initializeFirebase();
-    runApp(const MyApp());
+    runApp(
+      MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => SearchProvider()),
+      ],
+      child: MyApp(),
+    ),
+    );
   });
 }
 
@@ -68,7 +78,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: HomeScreen(),
+      home: SignupScreen(),
     );
   }
 }

@@ -39,7 +39,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       helperStyle: const TextStyle(fontSize: 10),
                       hintText: "Enter Your Name",
                       prefixIcon:
-                          const Icon(Icons.person, applyTextScaling: true),
+                      const Icon(Icons.person, applyTextScaling: true),
                       contentPadding: const EdgeInsets.symmetric(vertical: 20),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24))),
@@ -59,7 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       helperStyle: const TextStyle(fontSize: 15),
                       hintText: "Enter Phone Number",
                       prefixIcon:
-                          const Icon(Icons.phone, applyTextScaling: true),
+                      const Icon(Icons.phone, applyTextScaling: true),
                       contentPadding: const EdgeInsets.symmetric(vertical: 20),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24))),
@@ -113,15 +113,16 @@ class _SignupScreenState extends State<SignupScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => OtpScreen(
-                                        verificationId: verificationId,
-                                      )));
+                                      verificationId: verificationId,
+                                      name: nameController.text.isNotEmpty ? nameController.text : "Code Buddy"
+                                  )));
                           setState(() {
                             isLoading = false;
                           });
                         },
                         codeAutoRetrievalTimeout: (String verificationId) {},
                         phoneNumber:
-                            "+91${phoneNumberController.text}"); //todo allow different codes
+                        "+91${phoneNumberController.text}"); //todo allow different codes
                   },
                   child: const Text("Send OTP")),
             ],
