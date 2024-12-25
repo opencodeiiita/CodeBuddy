@@ -44,6 +44,9 @@ dependencies:
 
   http: null
 
+  fl_chart:
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
