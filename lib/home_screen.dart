@@ -3,6 +3,7 @@ import 'widgets/question_of_the_day.dart';
 import 'widgets/difficulty_selection.dart';
 import 'widgets/random_problem_card.dart';
 import 'widgets/bottom_navigation_bar.dart';
+import 'profile_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -62,12 +63,12 @@ class SearchPage extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text('Profile Page'));
-  }
-}
+// class ProfilePage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(child: Text('Profile Page'));
+//   }
+// }
 
 class SettingsPage extends StatelessWidget {
   @override
