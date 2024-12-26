@@ -4,6 +4,8 @@ import 'widgets/difficulty_selection.dart';
 import 'widgets/random_problem_card.dart';
 import 'widgets/bottom_navigation_bar.dart';
 import 'profile_page.dart';
+import 'widgets/filtered_problems.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -40,6 +42,16 @@ class _HomeScreenState extends State<HomeScreen> {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
+    final List<Problem> problems = [
+      Problem(title: "Two Sum", difficulty: "Easy", tags: ["Array", "Hashing"]),
+      Problem(title: "Merge Intervals", difficulty: "Medium", tags: ["Sorting", "Greedy"]),
+      Problem(title: "Longest Common Subsequence", difficulty: "Hard", tags: ["DP", "Strings"]),
+      Problem(title: "Binary Search", difficulty: "Easy", tags: ["Array", "Binary Search"]),
+      Problem(title: "Kth Largest Element", difficulty: "Medium", tags: ["Heap", "Sorting"]),
+      Problem(title: "Knapsack Problem", difficulty: "Hard", tags: ["DP", "Recursion"]),
+    ];
+
     return SingleChildScrollView(
       padding: EdgeInsets.all(16.0),
       child: Column(
@@ -50,6 +62,8 @@ class HomePage extends StatelessWidget {
           DifficultySelection(),
           SizedBox(height: 20),
           RandomProblems(),
+          SizedBox(height: 20),
+          FilteredProblemsWidget(problems: problems),
         ],
       ),
     );
