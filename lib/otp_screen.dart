@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:codebuddy/background.dart';
+import 'package:codebuddy/home_screen.dart';
 import 'package:codebuddy/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +129,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              const MyHomePage(title: "Home page with login")));
+                              HomeScreen()));
                 } catch (exception) {
                   String message = exception.toString();
                   if (exception is FirebaseAuthException) {

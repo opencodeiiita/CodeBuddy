@@ -1,3 +1,4 @@
+import 'package:codebuddy/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'widgets/question_of_the_day.dart';
 import 'widgets/difficulty_selection.dart';
@@ -15,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _pages = [
     HomePage(),
-    SearchPage(),
+    SearchScreen(),
     ProfilePage(),
     SettingsPage(),
   ];
