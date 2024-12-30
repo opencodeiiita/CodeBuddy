@@ -26,6 +26,10 @@ import 'widgets/badges_slider.dart';  // Import the badges slider widget
 import 'widgets/progress_graph.dart';  // Import the LeetCode progress graph widget
 import 'widgets/contribution_calendar_card.dart';  // Import the Contribution Calendar Card
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -36,8 +40,6 @@ class ProfilePage extends StatelessWidget {
         return (monthIndex + 1) * (dayIndex + 1) % 25;
       });
     });
-
-
 
     return Scaffold(
       appBar: AppBar(title: Text('Profile')),
@@ -80,8 +82,184 @@ class ProfilePage extends StatelessWidget {
             SizedBox(height: 16),
             // Contribution Calendar Card (Imported widget)
             ContributionCalendarCard(contributionsData: contributionsData),
+
+            // Add the LeetCode dialog box section here
+            SizedBox(height: 32),
+            LeetCodeDialogBox(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class LeetCodeDialogBox extends StatefulWidget {
+  @override
+  _LeetCodeDialogBoxState createState() => _LeetCodeDialogBoxState();
+}
+
+class _LeetCodeDialogBoxState extends State<LeetCodeDialogBox> {
+  String? leetCodeUsername;
+  Map<String, dynamic>? userData;
+
+  // Function to fetch data from the LeetCode API
+  Future<void> _fetchUserData() async {
+    if (leetCodeUsername == null || leetCodeUsername!.isEmpty) {
+      return;
+    }
+
+    final url = 'https://leetcode-stats-api.onrender.com/$leetCodeUsername'; // API URL format
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          userData = data['data']; // Store the 'data' key from the response
+        });
+      } else {
+        // Handle API error
+        print('Failed to load user data');
+        setState(() {
+          userData = null;
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+      setState(() {
+        userData = null;
+      });
+    }
+  }
+
+  // Function to clear the username and stats
+  void _clearStats() {
+    setState(() {
+      leetCodeUsername = null;
+      userData = null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Username Input Section
+          if (leetCodeUsername == null || userData == null)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Enter LeetCode Username:',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      leetCodeUsername = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Enter username",
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _fetchUserData,
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                  child: Text('Submit'),
+                ),
+              ],
+            ),
+          SizedBox(height: 20),
+
+          // Display Stats if Data is Available
+          if (userData != null) ...[
+            // Profile Section
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage: NetworkImage(userData!['avatar'] ?? ''),
+              ),
+            ),
+            SizedBox(height: 10),
+            Center(
+              child: Text(
+                'Username: ${userData!['name']}',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+              ),
+            ),
+            Center(
+              child: Text('Rank: ${userData!['rank']}', style: TextStyle(fontSize: 16, color: Colors.blueGrey)),
+            ),
+            SizedBox(height: 20),
+
+            // Problem Stats Section
+            Text(
+              'Total Problems: ${userData!['totalProblems']}',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+            ),
+            Text(
+              'Total Solved: ${userData!['totalSolved']}',
+              style: TextStyle(fontSize: 16, color: Colors.blueGrey),
+            ),
+            SizedBox(height: 10),
+            // Difficulty Breakdown
+            _buildDifficultyStat('Easy', userData!['easy']),
+            _buildDifficultyStat('Medium', userData!['medium']),
+            _buildDifficultyStat('Hard', userData!['hard']),
+            SizedBox(height: 20),
+
+            // Contest Ranking Section
+            if (userData!['contestRanking'] != null)
+              Text(
+                'Contest Ranking: ${userData!['contestRanking']}',
+                style: TextStyle(fontSize: 16, color: Colors.blueGrey),
+              ),
+            SizedBox(height: 20),
+
+            // Language Stats Section
+            if (userData!['languageStats'] != null &&
+                userData!['languageStats'].isNotEmpty)
+              Text(
+                'Languages Stats: ',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+              ),
+            ...userData!['languageStats'].map<Widget>((languageStat) {
+              return Text(
+                '${languageStat['languageName']}: ${languageStat['problemsSolved']} solved',
+                style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+              );
+            }).toList(),
+
+            SizedBox(height: 20),
+            // Change Username Button
+            ElevatedButton(
+              onPressed: _clearStats,
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              child: Text('Change Username'),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // Helper method to style difficulty stats
+  Widget _buildDifficultyStat(String difficulty, Map<String, dynamic> stats) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Text(
+        '$difficulty Problems: ${stats['solved']} solved out of ${stats['total']} (Beats ${stats['beatsPercentage']}%)',
+        style: TextStyle(fontSize: 14, color: Colors.blueGrey),
       ),
     );
   }

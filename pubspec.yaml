@@ -42,9 +42,10 @@ dependencies:
 
   firebase_auth:
 
-  http: null
+  http: ^1.2.2
 
   fl_chart:
+  shared_preferences: ^2.3.4
 
 
 dev_dependencies:
@@ -58,7 +59,6 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
   provider: ^6.1.2 # Replace with the latest version compatible with your Flutter SDK
-  http: ^1.2.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
