@@ -1,6 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class QuestionOfTheDay extends StatelessWidget {
+class QuestionOfTheDay extends StatefulWidget {
+  @override
+  _QuestionOfTheDayState createState() => _QuestionOfTheDayState();
+}
+
+class _QuestionOfTheDayState extends State<QuestionOfTheDay> {
+  String questionTitle = '';
+  String questionDifficulty = '';
+  String questionCategory = '';
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchQuestionOfTheDay();
+  }
+
+  Future<void> _fetchQuestionOfTheDay() async {
+    final url = 'https://alfa-leetcode-api.onrender.com/daily';
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          questionTitle = data['questionTitle'];
+          questionDifficulty = data['difficulty'];
+          questionCategory = 'Algorithms'; // Assuming category is 'Algorithms' for now
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load question of the day');
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to load data')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,8 +63,10 @@ class QuestionOfTheDay extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8),
-          Text(
-            'Category: Algorithms | Difficulty: Medium',
+          isLoading
+              ? CircularProgressIndicator()
+              : Text(
+            'Category: $questionCategory | Difficulty: $questionDifficulty',
             style: TextStyle(
               fontSize: 16,
               color: Colors.black87,
@@ -31,8 +74,10 @@ class QuestionOfTheDay extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8),
-          Text(
-            '“Find the prime factors of 154”',
+          isLoading
+              ? Container()
+              : Text(
+            '“$questionTitle”',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -49,8 +94,7 @@ class QuestionOfTheDay extends StatelessWidget {
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
-                onPressed: () {
-                },
+                onPressed: () {},
                 child: Text(
                   'Solve Now',
                   style: TextStyle(fontSize: 16),
