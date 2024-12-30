@@ -29,8 +29,23 @@ import 'widgets/contribution_calendar_card.dart';  // Import the Contribution Ca
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart'; // Add this import
 
 class ProfilePage extends StatelessWidget {
+  // Function to clear the stored phone number from SharedPreferences
+  Future<void> _clearPhoneNumber(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userPhoneNumber'); // Remove the stored phone number
+    // Show a confirmation message and navigate to the login screen
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Logged out successfully")),
+    );
+    // Navigator.pushReplacement(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => const LoginScreen()),
+    // );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Sample data for the contribution calendar (12 months, each with 4 weeks)
@@ -42,9 +57,17 @@ class ProfilePage extends StatelessWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(title: Text('Profile')),
+      appBar: AppBar(
+        title: const Text('Profile'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _clearPhoneNumber(context), // Call the logout method
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -55,7 +78,7 @@ class ProfilePage extends StatelessWidget {
                 ProfilePictureBox(
                   profileImageUrl: "https://cdn-icons-png.freepik.com/512/4209/4209019.png",
                 ),
-                SizedBox(width: 16), // Space between picture and details
+                const SizedBox(width: 16), // Space between picture and details
                 // Profile Details Card
                 Expanded(
                   child: ProfileDetailsCard(
@@ -66,25 +89,25 @@ class ProfilePage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Coding Stats Card
             CodingStatsCard(
               submissions: 234,
               challengesCompleted: 57,
               codingLanguages: ["Dart", "Python", "JavaScript", "C++"],
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Badges Slider (Imported widget)
             BadgesSlider(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // LeetCode Progress Graph (Imported widget)
             LeetCodeProgressGraph(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Contribution Calendar Card (Imported widget)
             ContributionCalendarCard(contributionsData: contributionsData),
 
             // Add the LeetCode dialog box section here
-            SizedBox(height: 32),
+            const SizedBox(height: 32),
             LeetCodeDialogBox(),
           ],
         ),
@@ -142,7 +165,7 @@ class _LeetCodeDialogBoxState extends State<LeetCodeDialogBox> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -151,18 +174,18 @@ class _LeetCodeDialogBoxState extends State<LeetCodeDialogBox> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Enter LeetCode Username:',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   onChanged: (value) {
                     setState(() {
                       leetCodeUsername = value;
                     });
                   },
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Enter username",
                     border: OutlineInputBorder(),
                     contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -171,15 +194,15 @@ class _LeetCodeDialogBoxState extends State<LeetCodeDialogBox> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _fetchUserData,
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  child: Text('Submit'),
+                  child: const Text('Submit'),
                 ),
               ],
             ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Display Stats if Data is Available
           if (userData != null) ...[
@@ -190,62 +213,62 @@ class _LeetCodeDialogBoxState extends State<LeetCodeDialogBox> {
                 backgroundImage: NetworkImage(userData!['avatar'] ?? ''),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: Text(
                 'Username: ${userData!['name']}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
             ),
             Center(
-              child: Text('Rank: ${userData!['rank']}', style: TextStyle(fontSize: 16, color: Colors.blueGrey)),
+              child: Text('Rank: ${userData!['rank']}', style: const TextStyle(fontSize: 16, color: Colors.blueGrey)),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Problem Stats Section
             Text(
               'Total Problems: ${userData!['totalProblems']}',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueGrey),
             ),
             Text(
               'Total Solved: ${userData!['totalSolved']}',
-              style: TextStyle(fontSize: 16, color: Colors.blueGrey),
+              style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // Difficulty Breakdown
             _buildDifficultyStat('Easy', userData!['easy']),
             _buildDifficultyStat('Medium', userData!['medium']),
             _buildDifficultyStat('Hard', userData!['hard']),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Contest Ranking Section
             if (userData!['contestRanking'] != null)
               Text(
                 'Contest Ranking: ${userData!['contestRanking']}',
-                style: TextStyle(fontSize: 16, color: Colors.blueGrey),
+                style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
               ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Language Stats Section
             if (userData!['languageStats'] != null &&
                 userData!['languageStats'].isNotEmpty)
-              Text(
+              const Text(
                 'Languages Stats: ',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueGrey),
               ),
             ...userData!['languageStats'].map<Widget>((languageStat) {
               return Text(
                 '${languageStat['languageName']}: ${languageStat['problemsSolved']} solved',
-                style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+                style: const TextStyle(fontSize: 14, color: Colors.blueGrey),
               );
             }).toList(),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Change Username Button
             ElevatedButton(
               onPressed: _clearStats,
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-              child: Text('Change Username'),
+              child: const Text('Change Username'),
             ),
           ],
         ],
@@ -259,7 +282,7 @@ class _LeetCodeDialogBoxState extends State<LeetCodeDialogBox> {
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Text(
         '$difficulty Problems: ${stats['solved']} solved out of ${stats['total']} (Beats ${stats['beatsPercentage']}%)',
-        style: TextStyle(fontSize: 14, color: Colors.blueGrey),
+        style: const TextStyle(fontSize: 14, color: Colors.blueGrey),
       ),
     );
   }

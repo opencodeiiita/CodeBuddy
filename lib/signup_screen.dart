@@ -3,6 +3,7 @@ import 'package:codebuddy/otp_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -40,7 +41,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       hintText: "Enter Your Name",
                       prefixIcon:
                       const Icon(Icons.person, applyTextScaling: true),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 20),
+                      contentPadding:
+                      const EdgeInsets.symmetric(vertical: 20),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24))),
                 ),
@@ -60,7 +62,8 @@ class _SignupScreenState extends State<SignupScreen> {
                       hintText: "Enter Phone Number",
                       prefixIcon:
                       const Icon(Icons.phone, applyTextScaling: true),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 20),
+                      contentPadding:
+                      const EdgeInsets.symmetric(vertical: 20),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24))),
                 ),
@@ -95,6 +98,20 @@ class _SignupScreenState extends State<SignupScreen> {
                       isLoading = true;
                     });
 
+                    // Log the phone number before saving
+                    print("Phone number entered: ${phoneNumberController.text}");
+
+                    // Removal Start
+                    // await Future.delayed(const Duration(seconds: 1)); // Simulate delay for mockup
+
+                    // Save phone number to SharedPreferences
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('userPhoneNumber', phoneNumberController.text);
+
+                    // Log after saving to SharedPreferences
+                    print("Phone number saved to SharedPreferences: ${prefs.getString('userPhoneNumber')}");
+
+                    // Navigation to OTP screen
                     await FirebaseAuth.instance.verifyPhoneNumber(
                         verificationCompleted:
                             (PhoneAuthCredential credential) {},
@@ -123,6 +140,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         codeAutoRetrievalTimeout: (String verificationId) {},
                         phoneNumber:
                         "+91${phoneNumberController.text}"); //todo allow different codes
+
+                    // Removal End
                   },
                   child: const Text("Send OTP")),
             ],
