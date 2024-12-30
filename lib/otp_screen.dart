@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:codebuddy/background.dart';
 import 'package:codebuddy/home_screen.dart';
@@ -7,6 +7,7 @@ import 'package:codebuddy/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 
 class OtpScreen extends StatefulWidget {
   String verificationId;
@@ -111,6 +112,10 @@ class _OtpScreenState extends State<OtpScreen> {
                 });
 
                 try {
+
+                  // Code Removed to be Revived Later
+
+
                   PhoneAuthCredential authCredential =
                       await PhoneAuthProvider.credential(
                           verificationId: widget.verificationId,
@@ -130,6 +135,32 @@ class _OtpScreenState extends State<OtpScreen> {
                       MaterialPageRoute(
                           builder: (context) =>
                               HomeScreen()));
+
+                //   Removal Start
+                //   const universalOtp = "123456"; // Universal OTP for mockup
+                //   if (otpController.text == universalOtp) {
+                //     // Simulate new user creation for signup
+                //     if (widget.name.isNotEmpty) {
+                //       // You can add caching logic here for storing user details
+                //       print("User signed up with name: ${widget.name}");
+                //     }
+                //
+                //     // Navigate to HomeScreen
+                //     Navigator.pushReplacement(
+                //       context,
+                //       MaterialPageRoute(builder: (context) => PhoneNumberLogger()),
+                //     );
+                //   } else {
+                //     ScaffoldMessenger.of(context).showSnackBar(
+                //       const SnackBar(
+                //         content: Text("Invalid OTP"),
+                //         duration: Duration(seconds: 4),
+                //       ),
+                //     );
+                //   }
+
+
+                  //   Removal End
                 } catch (exception) {
                   String message = exception.toString();
                   if (exception is FirebaseAuthException) {
