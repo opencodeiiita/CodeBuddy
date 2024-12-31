@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
             return HomeScreen();
           } else {
             // If no phone number, navigate to SignupScreen
-            return LoginScreen();
+            return HomeScreen();
           }
         },
       ),

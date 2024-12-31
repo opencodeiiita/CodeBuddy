@@ -5,14 +5,17 @@ import 'widgets/difficulty_selection.dart';
 import 'widgets/random_problem_card.dart';
 import 'widgets/bottom_navigation_bar.dart';
 import 'profile_page.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Add this import
 
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
+
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+
 
   final List<Widget> _pages = [
     HomePage(),

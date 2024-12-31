@@ -1,57 +1,52 @@
-
-import 'package:codebuddy/login_screen.dart';
-import 'package:codebuddy/signup_screen.dart';
-import 'package:codebuddy/start_screen.dart';
-import 'package:codebuddy/provider.dart';
-import 'package:provider/provider.dart';
-import 'package:codebuddy/search_provider.dart';
-import 'package:codebuddy/search_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-import 'firebase_options.dart';
-import 'home_screen.dart';
-
-import 'package:flutter/material.dart';
-
-// Version 3.0
-
-import 'package:flutter/material.dart';
 import 'widgets/profile_details_card.dart';
 import 'widgets/profile_picture_box.dart';
 import 'widgets/coding_stats_card.dart';
-import 'widgets/badges_slider.dart';  // Import the badges slider widget
-import 'widgets/progress_graph.dart';  // Import the LeetCode progress graph widget
-import 'widgets/contribution_calendar_card.dart';  // Import the Contribution Calendar Card
+import 'widgets/badges_slider.dart';
+import 'widgets/progress_graph.dart';
+import 'widgets/contribution_calendar_card.dart';
 
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart'; // Add this import
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
 
-class ProfilePage extends StatelessWidget {
-  // Function to clear the stored phone number from SharedPreferences
+class _ProfilePageState extends State<ProfilePage> {
   Future<void> _clearPhoneNumber(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('userPhoneNumber'); // Remove the stored phone number
-    // Show a confirmation message and navigate to the login screen
+    await prefs.remove('userPhoneNumber');
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Logged out successfully")),
     );
-    // Navigator.pushReplacement(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => const LoginScreen()),
-    // );
+  }
+
+  String email = "vk18lord@gmail.com";
+  String name = "Virat Kohli";
+  String bio = "A passionate Flutter developer.";
+  String profileImageUrl = "https://cdn-icons-png.freepik.com/512/4209/4209019.png";
+
+  void updateProfileDetails({
+    required String newEmail,
+    required String newName,
+    required String newBio,
+    required String newProfileImageUrl,
+  }) {
+    setState(() {
+      email = newEmail;
+      name = newName;
+      bio = newBio;
+      profileImageUrl = newProfileImageUrl;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Sample data for the contribution calendar (12 months, each with 4 weeks)
     final contributionsData = List.generate(12, (monthIndex) {
       return List.generate(30, (dayIndex) {
-        // Random contribution count between 0 and 25 (for illustration)
         return (monthIndex + 1) * (dayIndex + 1) % 25;
       });
     });
@@ -62,7 +57,7 @@ class ProfilePage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => _clearPhoneNumber(context), // Call the logout method
+            onPressed: () => _clearPhoneNumber(context),
           ),
         ],
       ),
@@ -74,41 +69,45 @@ class ProfilePage extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Profile Picture Box
-                ProfilePictureBox(
-                  profileImageUrl: "https://cdn-icons-png.freepik.com/512/4209/4209019.png",
-                ),
-                const SizedBox(width: 16), // Space between picture and details
-                // Profile Details Card
+                ProfilePictureBox(profileImageUrl: profileImageUrl),
+                const SizedBox(width: 16),
                 Expanded(
                   child: ProfileDetailsCard(
-                    name: "Virat Kohli",
-                    email: "vk18lord@gmail.com",
-                    bio: "A passionate Flutter developer.",
+                    name: name,
+                    email: email,
+                    bio: bio,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 16),
-            // Coding Stats Card
+            LeetCodeDialogBox(
+              onUpdateProfileDetails: ({
+                required String newEmail,
+                required String newName,
+                required String newBio,
+                required String newProfileImageUrl,
+              }) {
+                updateProfileDetails(
+                  newEmail: newEmail,
+                  newName: newName,
+                  newBio: newBio,
+                  newProfileImageUrl: newProfileImageUrl,
+                );
+              },
+            ),
+            const SizedBox(height: 16),
             CodingStatsCard(
               submissions: 234,
               challengesCompleted: 57,
               codingLanguages: ["Dart", "Python", "JavaScript", "C++"],
             ),
             const SizedBox(height: 16),
-            // Badges Slider (Imported widget)
             BadgesSlider(),
             const SizedBox(height: 16),
-            // LeetCode Progress Graph (Imported widget)
             LeetCodeProgressGraph(),
             const SizedBox(height: 16),
-            // Contribution Calendar Card (Imported widget)
             ContributionCalendarCard(contributionsData: contributionsData),
-
-            // Add the LeetCode dialog box section here
-            const SizedBox(height: 32),
-            LeetCodeDialogBox(),
           ],
         ),
       ),
@@ -117,6 +116,15 @@ class ProfilePage extends StatelessWidget {
 }
 
 class LeetCodeDialogBox extends StatefulWidget {
+  final Function({
+  required String newEmail,
+  required String newName,
+  required String newBio,
+  required String newProfileImageUrl,
+  }) onUpdateProfileDetails;
+
+  const LeetCodeDialogBox({Key? key, required this.onUpdateProfileDetails}) : super(key: key);
+
   @override
   _LeetCodeDialogBoxState createState() => _LeetCodeDialogBoxState();
 }
@@ -125,165 +133,283 @@ class _LeetCodeDialogBoxState extends State<LeetCodeDialogBox> {
   String? leetCodeUsername;
   Map<String, dynamic>? userData;
 
-  // Function to fetch data from the LeetCode API
-  Future<void> _fetchUserData() async {
-    if (leetCodeUsername == null || leetCodeUsername!.isEmpty) {
-      return;
-    }
+  @override
+  void initState() {
+    super.initState();
+    _checkUsernameAndShowDialog();
+  }
 
-    final url = 'https://leetcode-stats-api.onrender.com/$leetCodeUsername'; // API URL format
+  Future<void> _checkUsernameAndShowDialog() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    leetCodeUsername = prefs.getString('leetCodeUsername');
+
+    if (leetCodeUsername == null || leetCodeUsername!.isEmpty) {
+      Future.delayed(Duration.zero, () => _showUsernameInputDialog());
+    } else {
+      await _fetchUserData();
+    }
+  }
+
+  Future<void> _showUsernameInputDialog() async {
+    String tempUsername = "";
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Enter LeetCode Username'),
+          content: TextField(
+            onChanged: (value) {
+              tempUsername = value;
+            },
+            decoration: const InputDecoration(
+              hintText: "Enter your LeetCode username",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (tempUsername.isNotEmpty) {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('leetCodeUsername', tempUsername);
+                  setState(() {
+                    leetCodeUsername = tempUsername;
+                  });
+                  Navigator.of(context).pop();
+                  await _fetchUserData();
+                }
+              },
+              child: const Text('Submit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _fetchUserData() async {
+    if (leetCodeUsername == null || leetCodeUsername!.isEmpty) return;
+
+    final url = 'https://leetcode-stats-api.onrender.com/$leetCodeUsername';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          userData = data['data']; // Store the 'data' key from the response
+          userData = data['data'];
         });
+
+        final newEmail = userData?['username'] ?? "default@gmail.com";
+        final newName = userData?['name'] ?? "Default User";
+        final newBio = userData?['rank'] != null ? "Rank: ${userData!['rank']}" : "No Rank Data";
+        final newProfileImageUrl = userData?['avatar'] ?? "https://cdn-icons-png.freepik.com/512/4209/4209019.png";
+
+        widget.onUpdateProfileDetails(
+          newEmail: newEmail,
+          newName: newName,
+          newBio: newBio,
+          newProfileImageUrl: newProfileImageUrl,
+        );
       } else {
-        // Handle API error
-        print('Failed to load user data');
-        setState(() {
-          userData = null;
-        });
+        await _clearUsernameAndRetry();
       }
     } catch (e) {
-      print('Error: $e');
-      setState(() {
-        userData = null;
-      });
+      print("Error fetching data: $e");
     }
   }
 
-  // Function to clear the username and stats
-  void _clearStats() {
+
+  Future<void> _clearUsernameAndRetry() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('leetCodeUsername');
     setState(() {
       leetCodeUsername = null;
       userData = null;
     });
+    Future.delayed(Duration.zero, () => _showUsernameInputDialog());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Column(
+      children: [
+        if (userData != null)
+          LeetCodeStatsCard(
+            totalSolved: userData?['totalSolved'] ?? 0,
+            totalProblems: userData?['totalQuestions'] ?? 20,
+            easySolved: userData?['easy']?['solved'] ?? 0,
+            easyTotal: userData?['easy']?['total'] ?? 20,
+            mediumSolved: userData?['medium']?['solved'] ?? 0,
+            mediumTotal: userData?['medium']?['total'] ?? 20,
+            hardSolved: userData?['hard']?['solved'] ?? 0,
+            hardTotal: userData?['hard']?['total'] ?? 20,
+          ),
+        ElevatedButton(
+          onPressed: () => _clearUsernameAndRetry(),
+          child: const Text('Change Username'),
+        ),
+      ],
+    );
+  }
+}
+
+class LeetCodeStatsCard extends StatelessWidget {
+  final int totalSolved;
+  final int totalProblems;
+  final int easySolved;
+  final int easyTotal;
+  final int mediumSolved;
+  final int mediumTotal;
+  final int hardSolved;
+  final int hardTotal;
+
+  const LeetCodeStatsCard({
+    required this.totalSolved,
+    required this.totalProblems,
+    required this.easySolved,
+    required this.easyTotal,
+    required this.mediumSolved,
+    required this.mediumTotal,
+    required this.hardSolved,
+    required this.hardTotal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
       padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Username Input Section
-          if (leetCodeUsername == null || userData == null)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Enter LeetCode Username:',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      leetCodeUsername = value;
-                    });
-                  },
-                  decoration: const InputDecoration(
-                    hintText: "Enter username",
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blue, width: 2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _fetchUserData,
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  child: const Text('Submit'),
-                ),
-              ],
+          Text(
+            "LeetCode Stats",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
             ),
-          const SizedBox(height: 20),
-
-          // Display Stats if Data is Available
-          if (userData != null) ...[
-            // Profile Section
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(userData!['avatar'] ?? ''),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              StatItem(
+                label: "Total Solved",
+                value: "$totalSolved/$totalProblems",
+                valueColor: Colors.blueAccent,
               ),
-            ),
-            const SizedBox(height: 10),
-            Center(
-              child: Text(
-                'Username: ${userData!['name']}',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              DifficultyStatItem(
+                label: "Easy",
+                solved: easySolved,
+                total: easyTotal,
+                color: Colors.green,
               ),
-            ),
-            Center(
-              child: Text('Rank: ${userData!['rank']}', style: const TextStyle(fontSize: 16, color: Colors.blueGrey)),
-            ),
-            const SizedBox(height: 20),
-
-            // Problem Stats Section
-            Text(
-              'Total Problems: ${userData!['totalProblems']}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueGrey),
-            ),
-            Text(
-              'Total Solved: ${userData!['totalSolved']}',
-              style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
-            ),
-            const SizedBox(height: 10),
-            // Difficulty Breakdown
-            _buildDifficultyStat('Easy', userData!['easy']),
-            _buildDifficultyStat('Medium', userData!['medium']),
-            _buildDifficultyStat('Hard', userData!['hard']),
-            const SizedBox(height: 20),
-
-            // Contest Ranking Section
-            if (userData!['contestRanking'] != null)
-              Text(
-                'Contest Ranking: ${userData!['contestRanking']}',
-                style: const TextStyle(fontSize: 16, color: Colors.blueGrey),
+              DifficultyStatItem(
+                label: "Medium",
+                solved: mediumSolved,
+                total: mediumTotal,
+                color: Colors.orange,
               ),
-            const SizedBox(height: 20),
-
-            // Language Stats Section
-            if (userData!['languageStats'] != null &&
-                userData!['languageStats'].isNotEmpty)
-              const Text(
-                'Languages Stats: ',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blueGrey),
+              DifficultyStatItem(
+                label: "Hard",
+                solved: hardSolved,
+                total: hardTotal,
+                color: Colors.red,
               ),
-            ...userData!['languageStats'].map<Widget>((languageStat) {
-              return Text(
-                '${languageStat['languageName']}: ${languageStat['problemsSolved']} solved',
-                style: const TextStyle(fontSize: 14, color: Colors.blueGrey),
-              );
-            }).toList(),
-
-            const SizedBox(height: 20),
-            // Change Username Button
-            ElevatedButton(
-              onPressed: _clearStats,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-              child: const Text('Change Username'),
-            ),
-          ],
+            ],
+          ),
         ],
       ),
     );
   }
+}
 
-  // Helper method to style difficulty stats
-  Widget _buildDifficultyStat(String difficulty, Map<String, dynamic> stats) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Text(
-        '$difficulty Problems: ${stats['solved']} solved out of ${stats['total']} (Beats ${stats['beatsPercentage']}%)',
-        style: const TextStyle(fontSize: 14, color: Colors.blueGrey),
-      ),
+class StatItem extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color valueColor;
+
+  const StatItem({
+    required this.label,
+    required this.value,
+    required this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: valueColor,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+        ),
+      ],
+    );
+  }
+}
+
+class DifficultyStatItem extends StatelessWidget {
+  final String label;
+  final int solved;
+  final int total;
+  final Color color;
+
+  const DifficultyStatItem({
+    required this.label,
+    required this.solved,
+    required this.total,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          "$solved/$total",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+        ),
+      ],
     );
   }
 }
