@@ -47,7 +47,7 @@ class _QuestionOfTheDayState extends State<QuestionOfTheDay> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Color(0xFF49AB6C).withOpacity(0.1),
+        color: Color(0xFF49AB6C).withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Color(0xFF49AB6C), width: 2),
       ),
@@ -93,6 +93,7 @@ class _QuestionOfTheDayState extends State<QuestionOfTheDay> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  backgroundColor: Color(0xFF49AB6C),
                 ),
                 onPressed: () {},
                 child: Text(

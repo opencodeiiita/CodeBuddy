@@ -40,12 +40,10 @@ class _DifficultySelectionState extends State<DifficultySelection> {
 
         for (var problem in problemList) {
           final difficulty = problem['difficulty'];
-          final currentList = categorizedProblems[difficulty] as List<Map<String, String>>?;
-
-            categorizedProblems[difficulty]?.add({
-              'title': problem['title'],
-              'description': problem['titleSlug'],
-            });
+          categorizedProblems[difficulty]?.add({
+            'title': problem['title'],
+            'description': problem['titleSlug'],
+          });
         }
 
         setState(() {
@@ -73,46 +71,59 @@ class _DifficultySelectionState extends State<DifficultySelection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Select Difficulty',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Color.fromRGBO(57, 36, 72, 1),
-                ),
+          // New container for "Select Difficulty" text and dropdown
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Color.fromRGBO(150, 123, 182, 0.2), // Light purple background
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Color.fromRGBO(150, 123, 182, 1), // Purple outline
+                width: 2,
               ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(57, 36, 72, 1),
-                  borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Select Difficulty',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(57, 36, 72, 1),
+                  ),
                 ),
-                child: DropdownButton<String>(
-                  value: selectedDifficulty,
-                  dropdownColor: Color.fromRGBO(57, 36, 72, 1),
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                  items: problemsByDifficulty.keys.map((difficulty) {
-                    return DropdownMenuItem(
-                      value: difficulty,
-                      child: Text(
-                        difficulty,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedDifficulty = value!;
-                    });
-                  },
-                  underline: SizedBox(),
-                  icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(57, 36, 72, 1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: DropdownButton<String>(
+                    value: selectedDifficulty,
+                    dropdownColor: Color.fromRGBO(57, 36, 72, 1),
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                    items: problemsByDifficulty.keys.map((difficulty) {
+                      return DropdownMenuItem(
+                        value: difficulty,
+                        child: Text(
+                          difficulty,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDifficulty = value!;
+                      });
+                    },
+                    underline: SizedBox(),
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           SizedBox(height: 16),
           currentProblems != null && currentProblems.isNotEmpty
