@@ -1,4 +1,5 @@
 import 'package:codebuddy/home_screen.dart';
+import 'package:codebuddy/collaboration_issue_screen.dart';
 import 'package:codebuddy/signup_screen.dart';
 import 'package:codebuddy/login_screen.dart';
 import 'package:codebuddy/profile_page.dart';
@@ -52,17 +53,18 @@ class MyApp extends StatelessWidget {
         // Use FutureBuilder to load phone number and decide which screen to show
         future: loadPhoneNumber(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          } else if (snapshot.hasData && snapshot.data != null) {
-            // If phone number exists, navigate to HomeScreen
-            return HomeScreen();
-          } else {
-            // If no phone number, navigate to SignupScreen
-            return HomeScreen();
-          }
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return Scaffold(
+          //     body: Center(child: CircularProgressIndicator()),
+          //   );
+          // } else if (snapshot.hasData && snapshot.data != null) {
+          //   // If phone number exists, navigate to HomeScreen
+          //   return HomeScreen();
+          // } else {
+          //   // If no phone number, navigate to SignupScreen
+          //   return HomeScreen();
+          // }
+          return CollaborationIssueScreen();
         },
       ),
     );
