@@ -6,7 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
-
+import 'package:codebuddy/search_provider.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart'; // If you have Firebase options for your project
 
 void main() {
@@ -16,7 +17,14 @@ void main() {
       [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp])
       .then((value) {
     _initializeFirebase(); // Initialize Firebase
-    runApp(const MyApp());
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => SearchProvider()),
+        ],
+        child: MyApp(),
+      ),
+    );
   });
 }
 

@@ -40,6 +40,7 @@ class _DifficultySelectionState extends State<DifficultySelection> {
 
         for (var problem in problemList) {
           final difficulty = problem['difficulty'];
+          final currentList = categorizedProblems[difficulty] as List<Map<String, String>>?;
           categorizedProblems[difficulty]?.add({
             'title': problem['title'],
             'description': problem['titleSlug'],
