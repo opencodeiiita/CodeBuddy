@@ -1,3 +1,4 @@
+import 'package:codebuddy/collaboration_issue_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -149,10 +150,11 @@ class ProblemCard extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              // Trigger the issue creation workflow
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('create issue!')),
-                              );
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            CollaborationIssueScreen()));
                             },
                             child: const Text('Collaborate', style: TextStyle(color: Colors.white),),
                             style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(57, 36, 72, 0.9),)
