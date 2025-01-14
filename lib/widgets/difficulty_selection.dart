@@ -203,8 +203,40 @@ class ProblemCard extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Navigate to solve the problem!')),
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Take Action on This Challenge!'),
+                        content: const Text(
+                          'Choose how you\'d like to tackle this challenge:\n\n'
+                          '👉 Solve: Go directly to the challenge\'s LeetCode page.\n\n'
+                          '🤝 Collaborate: Create a new issue for team coding.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              // Open the LeetCode URL
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('launch url!')),
+                              );
+                            },
+                            child: const Text('Solve',style: TextStyle(color: Colors.white)),
+                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(57, 36, 72, 0.9)),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // Trigger the issue creation workflow
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('create issue!')),
+                              );
+                            },
+                            child: const Text('Collaborate', style: TextStyle(color: Colors.white),),
+                            style: ElevatedButton.styleFrom(backgroundColor: Color.fromRGBO(57, 36, 72, 0.9),)
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
                 child: Text(
